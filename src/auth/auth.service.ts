@@ -16,6 +16,16 @@ export class AuthService {
       throw new BadRequestException('Missing required fields');
     }
 
+    // Validate username and email
+    const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!usernameRegex.test(username)) {
+      throw new BadRequestException('Username is invalid');
+    }
+    if (!emailRegex.test(email)) {
+      throw new BadRequestException('Email is invalid');
+    }
+
     // Kiểm tra trùng username/email
     const existed = await this.userModel.findOne({ $or: [{ username }, { email }] });
     if (existed) throw new BadRequestException('Username or email already exists');
